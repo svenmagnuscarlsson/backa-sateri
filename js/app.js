@@ -47,10 +47,12 @@ const btnShowMap = document.getElementById('btn-show-map');
 const holeImageWrapper = document.getElementById('hole-image-wrapper');
 const holeMapWrapper = document.getElementById('hole-map-wrapper');
 const btnSaveGps = document.getElementById('btn-save-gps');
+const btnFetchGps = document.getElementById('btn-fetch-gps');
 
 // Map variables
 let map = null;
 let markerGroup = null;
+let draftMarker = null;
 
 // Scorecard View
 const scorecardTable = document.getElementById('scorecard-table');
@@ -146,63 +148,91 @@ function setupEventListeners() {
         btnShowMap.classList.replace('outline', 'secondary');
         btnShowImage.classList.replace('secondary', 'outline');
         if (map) {
-            setTimeout(() => { map.invalidateSize(); }, 100);
+            setTimeout(() => { 
+                map.invalidateSize(); 
+                fetchGpsAndPlaceMarker();
+            }, 100);
         }
     });
 
     // GPS save
     btnSaveGps.addEventListener('click', saveGpsPosition);
+    btnFetchGps.addEventListener('click', fetchGpsAndPlaceMarker);
 }
 
 function initMap() {
     // Basic init, center of Sweden roughly, will center on GPS or points later
     map = L.map('map').setView([57.7, 11.9], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19,
-        attribution: '© OpenStreetMap'
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri'
     }).addTo(map);
 
     markerGroup = L.layerGroup().addTo(map);
 }
 
-function saveGpsPosition() {
+function fetchGpsAndPlaceMarker() {
     if (!navigator.geolocation) {
         alert("GPS stöds inte av din webbläsare.");
         return;
     }
 
-    const originalText = btnSaveGps.textContent;
-    btnSaveGps.textContent = "Söker...";
-    btnSaveGps.disabled = true;
+    const originalText = btnFetchGps.textContent;
+    btnFetchGps.textContent = "Söker...";
+    btnFetchGps.disabled = true;
 
     navigator.geolocation.getCurrentPosition(
         (position) => {
-            btnSaveGps.textContent = originalText;
-            btnSaveGps.disabled = false;
+            btnFetchGps.textContent = originalText;
+            btnFetchGps.disabled = false;
 
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             
-            if (!state.shots[state.currentHole]) {
-                state.shots[state.currentHole] = [];
+            if (!draftMarker) {
+                draftMarker = L.marker([lat, lng], {draggable: true}).addTo(map);
+                draftMarker.bindPopup("Dra mig för att justera!").openPopup();
+            } else {
+                draftMarker.setLatLng([lat, lng]);
+                draftMarker.openPopup();
             }
-            
-            state.shots[state.currentHole].push({
-                lat: lat,
-                lng: lng,
-                timestamp: new Date().toISOString()
-            });
-
-            saveState();
-            updateMapForHole();
+            map.setView([lat, lng], 18);
         },
         (error) => {
-            btnSaveGps.textContent = originalText;
-            btnSaveGps.disabled = false;
+            btnFetchGps.textContent = originalText;
+            btnFetchGps.disabled = false;
             alert("Kunde inte hämta position: " + error.message);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
+}
+
+function saveGpsPosition() {
+    if (!draftMarker) {
+        alert("Ingen position att spara ännu. Klicka på 'Hämta GPS' först.");
+        return;
+    }
+
+    const latlng = draftMarker.getLatLng();
+    const lat = latlng.lat;
+    const lng = latlng.lng;
+            
+    if (!state.shots[state.currentHole]) {
+        state.shots[state.currentHole] = [];
+    }
+    
+    state.shots[state.currentHole].push({
+        lat: lat,
+        lng: lng,
+        timestamp: new Date().toISOString()
+    });
+
+    saveState();
+    updateMapForHole();
+    alert("Position sparad!");
+    
+    map.removeLayer(draftMarker);
+    draftMarker = null;
 }
 
 function updateMapForHole() {

@@ -1,22 +1,22 @@
 :root {
-    --bg-color: #12181b;
-    --text-primary: #e0e6ed;
-    --text-secondary: #9aa5b1;
-    --primary-color: #27ae60;
-    --primary-hover: #2ecc71;
-    --secondary-color: #2c3e50;
-    --danger-color: #e74c3c;
+    --bg-color: #f0f4f8;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --primary-color: #10b981;
+    --primary-hover: #059669;
+    --secondary-color: #64748b;
+    --danger-color: #ef4444;
     
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.05);
     
-    --border-radius: 16px;
-    --border-radius-sm: 8px;
+    --border-radius: 12px;
+    --border-radius-sm: 6px;
     
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
+    --spacing-sm: 6px;
+    --spacing-md: 12px;
+    --spacing-lg: 18px;
 }
 
 * {
@@ -29,9 +29,10 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    font-size: 14px;
 }
 
 .app-container {
@@ -40,7 +41,7 @@ body {
     min-height: 100vh;
     max-width: 600px; /* Mobile first, capped width on desktop */
     margin: 0 auto;
-    background: radial-gradient(circle at top right, #1a252c 0%, var(--bg-color) 100%);
+    background: radial-gradient(circle at top right, #ffffff 0%, var(--bg-color) 100%);
 }
 
 /* Typography */
@@ -48,6 +49,9 @@ h1, h2, h3 {
     font-weight: 600;
     margin-bottom: var(--spacing-md);
 }
+
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.1rem; }
 
 .text-center {
     text-align: center;
@@ -61,7 +65,7 @@ h1, h2, h3 {
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-md) var(--spacing-lg);
-    background: rgba(18, 24, 27, 0.8);
+    background: rgba(240, 244, 248, 0.85);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     position: sticky;
@@ -72,9 +76,9 @@ h1, h2, h3 {
 
 .app-header h1 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -82,17 +86,21 @@ h1, h2, h3 {
 /* Views */
 .views-container {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     position: relative;
     padding: var(--spacing-md);
 }
 
 .view {
     display: none;
+    flex: 1;
     animation: fadeIn 0.3s ease;
 }
 
 .view.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes fadeIn {
@@ -117,11 +125,11 @@ h1, h2, h3 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 24px;
+    padding: 10px 16px;
     border-radius: var(--border-radius-sm);
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
@@ -132,7 +140,7 @@ h1, h2, h3 {
 .btn.primary {
     background: var(--primary-color);
     color: white;
-    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
 }
 
 .btn.primary:active {
@@ -154,23 +162,23 @@ h1, h2, h3 {
 .btn.text-btn {
     background: transparent;
     color: var(--text-secondary);
-    padding: 8px;
+    padding: 6px;
 }
 
 .btn.lg {
-    padding: 16px 24px;
-    font-size: 1.1rem;
+    padding: 12px 20px;
+    font-size: 1rem;
 }
 
 .icon-btn {
     background: transparent;
     border: none;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px;
+    padding: 6px;
     border-radius: 50%;
     transition: background 0.2s;
 }
@@ -182,20 +190,21 @@ h1, h2, h3 {
 /* Forms & Inputs */
 input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 12px;
     border-radius: var(--border-radius-sm);
     border: 1px solid var(--glass-border);
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.8);
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-bottom: var(--spacing-md);
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 input:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
 .add-player-form {
@@ -231,8 +240,8 @@ input:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px;
-    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.6);
     border-radius: var(--border-radius-sm);
     margin-bottom: var(--spacing-sm);
     border: 1px solid var(--glass-border);
@@ -245,10 +254,11 @@ input:focus {
 
 .player-name {
     font-weight: 600;
+    font-size: 0.95rem;
 }
 
 .player-shcp {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
 }
 
@@ -266,18 +276,28 @@ input:focus {
 
 .hole-info-display h2 {
     margin: 0;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--primary-color);
 }
 
 .hole-stats {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
+.hole-media-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 250px;
+    margin-bottom: var(--spacing-md);
+}
+
 .hole-image-container {
+    flex: 1;
     width: 100%;
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -285,12 +305,26 @@ input:focus {
     box-shadow: var(--glass-shadow);
     border: 1px solid var(--glass-border);
     background: white; /* Since images might have white backgrounds */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hole-image-container img {
-    width: 100%;
-    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     display: block;
+}
+
+.hole-map-container {
+    flex: 1;
+    width: 100%;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--glass-border);
+    position: relative;
 }
 
 /* Scoring List */
@@ -318,29 +352,30 @@ input:focus {
 
 .scoring-player-name {
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .scoring-player-points {
     color: var(--primary-color);
     font-weight: 700;
+    font-size: 0.9rem;
 }
 
 .scoring-controls {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
 }
 
 .score-btn {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: none;
     background: var(--secondary-color);
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -352,9 +387,9 @@ input:focus {
 }
 
 .score-display {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
-    width: 50px;
+    width: 40px;
     text-align: center;
 }
 
@@ -378,7 +413,7 @@ table {
 }
 
 th, td {
-    padding: 10px;
+    padding: 8px;
     text-align: center;
     border-bottom: 1px solid var(--glass-border);
 }
@@ -386,22 +421,23 @@ th, td {
 th {
     color: var(--text-secondary);
     font-weight: 600;
+    font-size: 0.85rem;
 }
 
 td.points {
     color: var(--primary-color);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 tfoot {
     font-weight: bold;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.02);
 }
 
 /* History */
 .history-item {
     padding: var(--spacing-md);
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.6);
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius-sm);
     margin-bottom: var(--spacing-sm);
