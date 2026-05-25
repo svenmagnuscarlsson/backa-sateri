@@ -742,8 +742,15 @@ async function renderHistory() {
                                 </td>
                                 ${round.players.map(p => {
                                     const score = round.scores[p.name][idx] || 0;
+                                    const putts = (round.putts && round.putts[p.name]) ? (round.putts[p.name][idx] || 0) : 0;
                                     const points = calculatePoints(p, idx, score);
-                                    const scoreStr = score > 0 ? `${score} <span class="text-[10px] text-primary">(${points}p)</span>` : '-';
+                                    let scoreStr = '-';
+                                    if (score > 0) {
+                                        scoreStr = `${score} <span class="text-[10px] text-primary">(${points}p)</span>`;
+                                        if (putts > 0) {
+                                            scoreStr += `<br><span class="text-[10px] text-on-surface-variant">${putts} puttar</span>`;
+                                        }
+                                    }
                                     return `<td class="p-2 text-center text-on-surface">${scoreStr}</td>`;
                                 }).join('')}
                             </tr>
