@@ -666,7 +666,7 @@ async function renderHistory() {
             return;
         }
         
-        history.forEach(round => {
+        history.forEach((round, roundIndex) => {
             const date = new Date(round.completedAt).toLocaleDateString('sv-SE', {
                 year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
             });
@@ -717,6 +717,45 @@ async function renderHistory() {
             });
             
             html += `</div>`;
+            
+            // Add details toggle and table
+            html += `
+                <button class="btn outline mt-4 w-full text-sm py-2" onclick="document.getElementById('details-${roundIndex}').classList.toggle('hidden')">
+                    Visa / Dölj hål-för-hål
+                </button>
+                <div id="details-${roundIndex}" class="hidden mt-4 bg-surface-container-low rounded-lg p-2 border border-outline-variant/30 overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm min-w-[300px]">
+                        <thead>
+                            <tr class="border-b border-outline-variant/50">
+                                <th class="p-2 font-label-bold text-on-surface">Hål</th>
+                                ${round.players.map(p => `<th class="p-2 font-label-bold text-on-surface text-center">${p.name}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            COURSE_DATA.forEach((hole, idx) => {
+                html += `
+                            <tr class="border-b border-outline-variant/20">
+                                <td class="p-2 text-on-surface-variant font-label-sm whitespace-nowrap">
+                                    <span class="font-bold">${hole.hole}</span> <span class="text-[10px]">(P${hole.par})</span>
+                                </td>
+                                ${round.players.map(p => {
+                                    const score = round.scores[p.name][idx] || 0;
+                                    const points = calculatePoints(p, idx, score);
+                                    const scoreStr = score > 0 ? `${score} <span class="text-[10px] text-primary">(${points}p)</span>` : '-';
+                                    return `<td class="p-2 text-center text-on-surface">${scoreStr}</td>`;
+                                }).join('')}
+                            </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
             li.innerHTML = html;
             historyList.appendChild(li);
         });
