@@ -674,7 +674,15 @@ async function renderHistory() {
             const li = document.createElement('li');
             li.className = 'bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/30';
             
-            let html = `<div class="font-label-sm text-secondary mb-2 border-b border-outline-variant/30 pb-2">${date}</div><div class="flex flex-col gap-3">`;
+            let html = `
+                <div class="flex justify-between items-center mb-2 border-b border-outline-variant/30 pb-2">
+                    <div class="font-label-sm text-secondary">${date}</div>
+                    <button class="text-primary hover:text-primary-container p-1 rounded transition-colors" onclick="editRoundDate(${round.id}, '${round.completedAt}')" title="Ändra datum">
+                        <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
+                    </button>
+                </div>
+                <div class="flex flex-col gap-3">
+            `;
             
             round.players.forEach(p => {
                 let totalScore = 0;
@@ -774,3 +782,30 @@ async function renderHistory() {
 
 // Start app
 document.addEventListener('DOMContentLoaded', init);
+
+window.editRoundDate = async function(roundId, currentDateISO) {
+    const currentDate = new Date(currentDateISO);
+    const tzOffset = currentDate.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(currentDate - tzOffset)).toISOString().slice(0, 16);
+    
+    const newDateStr = prompt("Ange nytt datum och tid (ÅÅÅÅ-MM-DD HH:MM):", localISOTime.replace('T', ' '));
+    if (!newDateStr) return;
+    
+    const parsedDate = new Date(newDateStr.replace(' ', 'T'));
+    if (isNaN(parsedDate.getTime())) {
+        alert("Ogiltigt datumformat.");
+        return;
+    }
+    
+    try {
+        const history = await window.GolfDB.getHistory();
+        const round = history.find(r => r.id === roundId);
+        if (round) {
+            round.completedAt = parsedDate.toISOString();
+            await window.GolfDB.updateHistoryRound(round);
+            renderHistory();
+        }
+    } catch (e) {
+        alert("Kunde inte uppdatera datumet.");
+    }
+};

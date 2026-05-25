@@ -100,6 +100,18 @@ const db = {
             };
             request.onerror = () => reject(request.error);
         });
+    },
+
+    async updateHistoryRound(roundData) {
+        const database = await openDB();
+        return new Promise((resolve, reject) => {
+            const transaction = database.transaction(STORE_HISTORY, 'readwrite');
+            const store = transaction.objectStore(STORE_HISTORY);
+            const request = store.put(roundData);
+            
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
     }
 };
 
